@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("HotelListingsDbConnectionString");
 
 // Creates a database context that represents the connection to the database; An object that will run as a bridge to the database
-
+// This allows us to 'inject' our context into any file we'd like
 builder.Services.AddDbContext<HotelListingDbContext>(options => {
     // Tells the context which type of database it is and takes the connection string as an argument
     options.UseSqlServer(connectionString);
