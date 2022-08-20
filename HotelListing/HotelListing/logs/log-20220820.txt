@@ -1,0 +1,17 @@
+2022-08-20 16:04:14.159 -04:00 [INF] Now listening on: https://localhost:7091
+2022-08-20 16:04:14.233 -04:00 [INF] Now listening on: http://localhost:5091
+2022-08-20 16:04:14.248 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-08-20 16:04:14.249 -04:00 [INF] Hosting environment: Development
+2022-08-20 16:04:14.250 -04:00 [INF] Content root path: C:\Users\tbeng\Desktop\HotelListing\HotelListing\HotelListing\
+2022-08-20 16:11:08.735 -04:00 [ERR] Failed executing DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Countries] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NULL,
+    [ShortName] nvarchar(max) NULL,
+    CONSTRAINT [PK_Countries] PRIMARY KEY ([Id])
+);
+2022-08-20 17:37:44.947 -04:00 [INF] Now listening on: https://localhost:7091
+2022-08-20 17:37:45.014 -04:00 [INF] Now listening on: http://localhost:5091
+2022-08-20 17:37:45.021 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-08-20 17:37:45.022 -04:00 [INF] Hosting environment: Development
+2022-08-20 17:37:45.023 -04:00 [INF] Content root path: C:\Users\tbeng\Desktop\HotelListing\HotelListing\HotelListing\
