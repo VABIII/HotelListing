@@ -557,3 +557,8 @@ Error Number:544,State:1,Class:16
    at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
    at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
 2022-08-20 20:02:35.469 -04:00 [INF] Application is shutting down...
+2022-08-20 20:54:22.425 -04:00 [INF] Now listening on: https://localhost:7091
+2022-08-20 20:54:22.474 -04:00 [INF] Now listening on: http://localhost:5091
+2022-08-20 20:54:22.479 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-08-20 20:54:22.480 -04:00 [INF] Hosting environment: Development
+2022-08-20 20:54:22.480 -04:00 [INF] Content root path: C:\Users\tbeng\Desktop\HotelListing\HotelListing\HotelListing\

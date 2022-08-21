@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.Data;
 using Microsoft.AspNetCore.Authorization;
+using HotelListing.DTOs.CountryDTO;
+using AutoMapper;
 
 // Controller is what recieves the request, then runs a process, and finally returns a response with data from said process
 
@@ -18,12 +20,14 @@ namespace HotelListing.Controllers
     {
         // This creates a private field/variable that should be equated to whatever we are 'injecting'
         // This way, we don't have to declare a new instance of the db context in each new class. Instead it can simply be 'injected'
-        private readonly HotelListingDbContext _context; // 
+        private readonly HotelListingDbContext _context; // The leading underscore, _ , denotes a private field/variable
+        private readonly IMapper _mapper;
 
         // Here, we have the 'CountriesController' 'constructor' and we pass it in our datatype and give it a name, which in this case is the db context
-        public CountriesController(HotelListingDbContext context)  
+        public CountriesController(HotelListingDbContext context, IMapper _mapper)
         {
             _context = context;  // Right out of the box, we are 'injecting' our database 'context' directly into the controller. This comes from the context setup in the Program.cs file
+            this._mapper = _mapper; // This allows us to inject our data type mapper into our file
         }
 
         // The below section is referred to as an 'Action' - the part of the code that actually performs the process dictated by the controller
@@ -93,15 +97,45 @@ namespace HotelListing.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
+        /* [HttpPost]
+         [AllowAnonymous]
+         public async Task<ActionResult<Country>> PostCountry(Country country)  // This method is an 'Action' which returns an 'ActionReult' object of type 'Country' and accepts a 
+         {                                                                      // parameter called 'country' of type 'Country' 
+             _context.Countries.Add(country);  // Since '_context' contains a copy of our db context, this will go to the 'Country' table and add our parameter 'country' to the table
+             await _context.SaveChangesAsync(); // We then save the changes we just made
+
+             // Returns a CreatedAtActionResult. The first parameter, 'GetCountry', is the url to retrieve this new record with that id and data
+             // The response header will contain the full URL for the endpoint that can be used to retrieve the newly add country
+             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+         }*/
+
+        /*        // This is the method used without using an autoMapper that maps between different data types created in the 'MapConfig' class
+                [HttpPost]
+                [AllowAnonymous]
+                public async Task<ActionResult<Country>> PostCountry(CreateCountryDTO createCountry)  
+                {
+                    var country = new Country
+                    {
+                        Name = createCountry.Name,
+                        ShortName = createCountry.ShortName,
+                    };
+
+                    _context.Countries.Add(country);  
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+                }
+        */
+
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<Country>> PostCountry(Country country)  // This method is an 'Action' which returns an 'ActionReult' object of type 'Country' and accepts a 
-        {                                                                      // parameter called 'country' of type 'Country' 
-            _context.Countries.Add(country);  // Since '_context' contains a copy of our db context, this will go to the 'Country' table and add our parameter 'country' to the table
-            await _context.SaveChangesAsync(); // We then save the changes we just made
+        public async Task<ActionResult<Country>> PostCountry(CreateCountryDTO createCountryDTO)
+        {
+            var country = _mapper.Map<Country>(createCountryDTO); // Creates an object named 'country' of type 'Country' and maps the data from the 'createCountryDTO' onto itself
 
-            // Returns a CreatedAtActionResult. The first parameter, 'GetCountry', is the url to retrieve this new record with that id and data
-            // The response header will contain the full URL for the endpoint that can be used to retrieve the newly add country
+            _context.Countries.Add(country);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
         }
 
