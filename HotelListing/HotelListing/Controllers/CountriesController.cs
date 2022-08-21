@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.Data;
+using Microsoft.AspNetCore.Authorization;
 
 // Controller is what recieves the request, then runs a process, and finally returns a response with data from said process
 
@@ -27,22 +28,31 @@ namespace HotelListing.Controllers
 
         // The below section is referred to as an 'Action' - the part of the code that actually performs the process dictated by the controller
 
-        // GET: api/Countries
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+        // GET: api/Countries 
+        [HttpGet] // Defines the HTTP CRUD method required to access this endpoint
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<Country>>> GetCountries() // The func, GetCountries, has a return type of IEnumerable, a 'collection' type, which will return an array of all the countries even it is just one. If there are zero countries then it will return an empty array, [].
         {
+            // We are returning the query results of a SQL query targeting the table 'Countries'
+            // This is the same as "SELECT * FROM [Countries]"
             return await _context.Countries.ToListAsync();
+
+            // You could also wrap the response in the Ok() func which will have response status of 200
+            // var countries = await _context.Countries.ToListAsync(); - Not necessarily required, but conforms with C# conventions
+            //return Ok(countries);
         }
 
         // GET: api/Countries/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Country>> GetCountry(int id)
         {
-            var country = await _context.Countries.FindAsync(id);
-
-            if (country == null)
+            var country = await _context.Countries.FindAsync(id); // The FindAsync() func finds the entity with the given primary key values. If an entity with the given PK values
+                                                                  // is being tracked by the context, then it is return immediately with making db call. Otherwise, a query is sent to db, and if found it   
+            if (country == null)                                  // then attached to the context and returned
             {
-                return NotFound();
+                
+                return NotFound(); // Creates NotFoundResult that carries a 404 error
             }
 
             return country;
@@ -51,7 +61,8 @@ namespace HotelListing.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(int id, Country country)
+        [AllowAnonymous]
+        public async Task<IActionResult> PutCountry(int id, Country country) 
         {
             if (id != country.Id)
             {
@@ -81,17 +92,22 @@ namespace HotelListing.Controllers
 
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
-        {
-            _context.Countries.Add(country);
-            await _context.SaveChangesAsync();
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<Country>> PostCountry(Country country)  // This method is an 'Action' which returns an 'ActionReult' object of type 'Country' and accepts a 
+        {                                                                      // parameter called 'country' of type 'Country' 
+            _context.Countries.Add(country);  // Since '_context' contains a copy of our db context, this will go to the 'Country' table and add our parameter 'country' to the table
+            await _context.SaveChangesAsync(); // We then save the changes we just made
+
+            // Returns a CreatedAtActionResult. The first parameter, 'GetCountry', is the url to retrieve this new record with that id and data
+            // The response header will contain the full URL for the endpoint that can be used to retrieve the newly add country
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
         }
 
         // DELETE: api/Countries/5
         [HttpDelete("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             var country = await _context.Countries.FindAsync(id);
